@@ -38,8 +38,10 @@ class BrowserWindow(Gtk.Window):
     def getWebData(self, url):
         result = urllib.request.urlopen(url)
         html = result.read()
-        html = str(html)
-        return html
+        result.close()
+        html = html.decode()
+        print(html)
+        return 'done'
 
 win = BrowserWindow()
 win.connect('delete-event', Gtk.main_quit)
