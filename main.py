@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from gi.repository import Gtk
+from gi.repository import Gtk, WebKit
 from subprocess import call
 import urllib.request
 
@@ -15,9 +15,8 @@ class BrowserWindow(Gtk.Window):
         topBar = self.buildTopBar()
         vert.add(topBar)
 
-        self.textarea = Gtk.Label()
-        self.textarea.set_text("Blank")
-        vert.add(self.textarea)
+        self.webview = WebKit.WebView()
+        vert.add(self.webview)
 
         self.add(vert)
 
@@ -32,16 +31,16 @@ class BrowserWindow(Gtk.Window):
         return topBar
 
     def request(self, widget):
-        result = self.getWebData(self.addressBar.get_text())
-        self.textarea.set_text(result)
+        url = self.addressBar.get_text()
+        #result = self.getWebData(url)
+        self.webview.load_uri(url)
 
     def getWebData(self, url):
         result = urllib.request.urlopen(url)
         html = result.read()
         result.close()
         html = html.decode()
-        print(html)
-        return 'done'
+        return html
 
 win = BrowserWindow()
 win.connect('delete-event', Gtk.main_quit)
