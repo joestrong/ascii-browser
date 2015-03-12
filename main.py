@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from gi.repository import Gtk, WebKit
+from gi.repository import Gtk, WebKit, GdkPixbuf
 from subprocess import call
 import urllib.request
 
@@ -16,7 +16,8 @@ class BrowserWindow(Gtk.Window):
         vert.add(topBar)
 
         self.webview = WebKit.WebView()
-        vert.add(self.webview)
+        self.imageview = Gtk.Image()
+        vert.add(self.imageview)
 
         self.add(vert)
 
@@ -31,16 +32,17 @@ class BrowserWindow(Gtk.Window):
         return topBar
 
     def request(self, widget):
-        url = self.addressBar.get_text()
-        #result = self.getWebData(url)
-        self.webview.load_uri(url)
+        uri = self.addressBar.get_text()
+        self.getScreenshot(uri)
 
-    def getWebData(self, url):
-        result = urllib.request.urlopen(url)
-        html = result.read()
-        result.close()
-        html = html.decode()
-        return html
+    def getScreenshot(self, uri):
+        self.webview.load_uri(uri)
+        #self.webview.wait_load()
+
+        width, height = win.get_size()
+        pixbuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, False, 8, width, height)
+        screenshot = pixbuf.get_from_drawable(win.window, win.get_colormap(), 0, 0, 0, 0, width, height)
+        screenshot.save('screenshot.png', 'png')
 
 win = BrowserWindow()
 win.connect('delete-event', Gtk.main_quit)
