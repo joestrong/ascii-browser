@@ -10,16 +10,17 @@ class BrowserWindow(Gtk.Window):
     def __init__(self):
         Gtk.Window.__init__(self, title="Ascii Browser")
         self.set_default_size(500, 400)
-        vert = Gtk.VBox()
+        self.vert = Gtk.VBox()
 
         topBar = self.buildTopBar()
-        vert.add(topBar)
+        self.vert.add(topBar)
 
         self.webview = WebKit.WebView()
         self.imageview = Gtk.Image()
-        vert.add(self.imageview)
+        self.vert.add(self.webview)
+        self.vert.add(self.imageview)
 
-        self.add(vert)
+        self.add(self.vert)
 
     def buildTopBar(self):
         topBar = Gtk.HeaderBar()
@@ -37,10 +38,10 @@ class BrowserWindow(Gtk.Window):
 
     def getScreenshot(self, uri):
         self.webview.load_uri(uri)
-        #self.webview.wait_load()
 
-        width, height = self.get_size()
-        gdkwin = Gdk.get_default_root_window()
+        width = self.webview.get_allocation().width
+        height = self.webview.get_allocation().height
+        gdkwin = self.webview.get_window()
         pixbuf = Gdk.pixbuf_get_from_window(gdkwin, 0, 0, width, height)
         self.imageview.set_from_pixbuf(pixbuf)
 
