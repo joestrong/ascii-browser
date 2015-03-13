@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from gi.repository import Gtk, WebKit, GdkPixbuf
+from gi.repository import Gtk, WebKit, Gdk
 from subprocess import call
 import urllib.request
 
@@ -39,10 +39,10 @@ class BrowserWindow(Gtk.Window):
         self.webview.load_uri(uri)
         #self.webview.wait_load()
 
-        width, height = win.get_size()
-        pixbuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, False, 8, width, height)
-        screenshot = pixbuf.get_from_drawable(win.window, win.get_colormap(), 0, 0, 0, 0, width, height)
-        screenshot.save('screenshot.png', 'png')
+        width, height = self.get_size()
+        gdkwin = Gdk.get_default_root_window()
+        pixbuf = Gdk.pixbuf_get_from_window(gdkwin, 0, 0, width, height)
+        self.imageview.set_from_pixbuf(pixbuf)
 
 win = BrowserWindow()
 win.connect('delete-event', Gtk.main_quit)
