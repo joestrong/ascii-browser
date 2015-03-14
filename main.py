@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
-from gi.repository import Gtk, WebKit, Gdk
-from subprocess import call
-import urllib.request
+from gi.repository import Gtk
+
+import asciiview
 
 class BrowserWindow(Gtk.Window):
 
@@ -11,15 +11,11 @@ class BrowserWindow(Gtk.Window):
         Gtk.Window.__init__(self, title="Ascii Browser")
         self.set_default_size(500, 400)
         self.vert = Gtk.VBox()
-
         topBar = self.buildTopBar()
         self.vert.add(topBar)
 
-        self.webview = WebKit.WebView()
-        self.imageview = Gtk.Image()
+        self.webview = asciiview.AsciiView()
         self.vert.add(self.webview)
-        self.vert.add(self.imageview)
-
         self.add(self.vert)
 
     def buildTopBar(self):
@@ -34,16 +30,7 @@ class BrowserWindow(Gtk.Window):
 
     def request(self, widget):
         uri = self.addressBar.get_text()
-        self.getScreenshot(uri)
-
-    def getScreenshot(self, uri):
-        self.webview.load_uri(uri)
-
-        width = self.webview.get_allocation().width
-        height = self.webview.get_allocation().height
-        gdkwin = self.webview.get_window()
-        pixbuf = Gdk.pixbuf_get_from_window(gdkwin, 0, 0, width, height)
-        self.imageview.set_from_pixbuf(pixbuf)
+        self.webview.get_url(uri)
 
 win = BrowserWindow()
 win.connect('delete-event', Gtk.main_quit)
