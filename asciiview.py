@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from gi.repository import Gtk, Gdk, WebKit
 
 class AsciiView(Gtk.VBox):
